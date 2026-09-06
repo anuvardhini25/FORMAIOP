@@ -1,0 +1,1 @@
+export function evaluateCondition(rule,values){if(!rule)return true;const actual=values?.[rule.field];if(rule.operator==='equals')return actual===rule.value;if(rule.operator==='notEquals')return actual!==rule.value;if(rule.operator==='contains')return Array.isArray(actual)?actual.includes(rule.value):typeof actual==='string'?actual.includes(String(rule.value)):false;return true;}
