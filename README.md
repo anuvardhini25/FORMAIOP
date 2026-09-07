@@ -1,358 +1,1351 @@
-# ✦ FORMA AI
+# 🚀 Forma AI
 
-## Turn Complex Forms Into Simple Conversations.
+## AI-Augmented Dynamic Form Engine
 
-Forma AI is an AI-augmented dynamic form engine that turns natural-language descriptions into safe, structured, reviewable form data. The application combines schema-driven MongoDB forms, React Hook Form, conditional logic, AI extraction with LangChain/Gemini or OpenAI, authentication, save/resume drafts, and submission history.
+<p align="center">
+  <strong>Describe • Extract • Validate • Generate</strong>
+</p>
 
-> **Important:** This repository extends the original Week 1/Week 2 implementation. The existing insurance-claim schema, dynamic rendering, `showIf` conditional logic, React Hook Form validation, Magic Input, LangChain extraction, and backend schema validation are preserved and integrated into the SaaS experience.
+<p align="center">
+  An AI-powered dynamic form engine that transforms natural-language descriptions
+  into structured data and dynamically generates intelligent forms based on
+  schemas, validation rules, and conditional business logic.
+</p>
 
-## Features
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
+  <img src="https://img.shields.io/badge/React_Hook_Form-Forms-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white" alt="React Hook Form">
+  <img src="https://img.shields.io/badge/Node.js-22+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Express.js-5-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js">
+  <img src="https://img.shields.io/badge/MongoDB-8-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
+  <img src="https://img.shields.io/badge/Mongoose-ODM-880000?style=for-the-badge" alt="Mongoose">
+  <img src="https://img.shields.io/badge/LangChain-AI-1C3C3C?style=for-the-badge" alt="LangChain">
+  <img src="https://img.shields.io/badge/LLM-Powered-8A2BE2?style=for-the-badge" alt="LLM">
+</p>
 
-- AI Magic Input: natural language → structured form values
-- Schema-controlled AI extraction; unknown LLM fields are rejected server-side
-- MongoDB/Mongoose dynamic form schemas
-- 18-question insurance claim template
-- Employee Leave Request, Healthcare Intake, Customer Onboarding and Incident Report templates
-- Schema-driven conditional `showIf` logic
-- React Hook Form validation and multi-step workflows
-- AI extraction review with editable AI-populated fields
-- Save Draft, debounced auto-save, resume and delete draft
-- Final review before submission
-- Submission history and detail pages
-- JWT authentication with bcrypt password hashing
-- Password reset token flow
-- Form builder for text, textarea, number, email, date, select, radio and checkbox fields
-- Responsive SaaS dashboard, navigation, empty/loading/error states and toast feedback
-- Versioned form schemas so submissions retain their form version
+---
 
-## Architecture
+## 📑 Table of Contents
+
+* [🌐 About](#-about)
+* [❗ Problem Statement](#-problem-statement)
+* [💡 Solution](#-solution)
+* [🎯 Objectives](#-objectives)
+* [✨ Key Features](#-key-features)
+* [🤖 AI-Powered Natural Language Extraction](#-ai-powered-natural-language-extraction)
+* [📋 Dynamic Form Engine](#-dynamic-form-engine)
+* [🔀 Conditional Branching](#-conditional-branching)
+* [🧠 Schema-Driven Architecture](#-schema-driven-architecture)
+* [✅ Validation](#-validation)
+* [💾 Data Persistence](#-data-persistence)
+* [🔄 How It Works](#-how-it-works)
+* [🏗️ System Architecture](#️-system-architecture)
+* [🧰 Tech Stack](#-tech-stack)
+* [📡 API Architecture](#-api-architecture)
+* [📸 Project Screenshots](#-project-screenshots)
+* [📂 Project Structure](#-project-structure)
+* [🚀 Installation](#-installation)
+* [🧪 Testing](#-testing)
+* [🔐 Security](#-security)
+* [📈 Development Journey](#-development-journey)
+* [🏆 Project Highlights](#-project-highlights)
+* [🌟 Advantages](#-advantages)
+* [🔮 Future Enhancements](#-future-enhancements)
+* [👥 Team Members](#-team-members)
+* [📜 License](#-license)
+
+---
+
+# 🌐 About
+
+**Forma AI** is an AI-augmented dynamic form engine designed to simplify complex and lengthy data-entry workflows.
+
+Traditional enterprise applications often depend on large forms containing dozens of questions, validation rules, conditional fields, and multiple business workflows. Forma AI improves this experience by combining **Large Language Models (LLMs)** with a **schema-driven dynamic form engine**.
+
+Instead of manually answering every question, users can describe their situation naturally.
+
+For example:
+
+> "I was driving my Honda yesterday when I hit a deer. The windshield was damaged."
+
+The AI engine processes the description and extracts structured information:
+
+```json
+{
+  "incident_type": "animal_collision",
+  "vehicle": "Honda",
+  "damage": "windshield"
+}
+```
+
+The extracted information is then mapped to the appropriate form fields. The form engine evaluates business rules and displays only the questions relevant to the user's situation.
+
+---
+
+# ❗ Problem Statement
+
+Complex enterprise forms can contain:
+
+* 50+ questions
+* Nested sections
+* Conditional fields
+* Multiple question types
+* Required fields
+* Validation rules
+* Complex business logic
+* Multiple branching paths
+
+Traditional forms force users to manually navigate through these questions, even when many fields are not relevant to them.
+
+This creates several problems:
+
+* ❌ Long and frustrating forms
+* ❌ Unnecessary questions
+* ❌ Increased completion time
+* ❌ Incorrect data entry
+* ❌ Poor user experience
+* ❌ Difficult maintenance
+* ❌ Hard-coded business logic
+* ❌ Repetitive development work
+
+The core challenge is to convert **unstructured natural-language information into structured data** that can be consumed by a dynamic form engine.
+
+---
+
+# 💡 Solution
+
+Forma AI combines artificial intelligence with schema-driven form generation.
+
+The system follows this pipeline:
 
 ```text
-React + Vite
-  ├─ React Router
-  ├─ React Hook Form
-  ├─ Zustand stores
-  └─ Axios API client
-          │
-          ▼
-Node.js + Express
-  ├─ Auth controllers/services
-  ├─ Form schema APIs
-  ├─ Submission APIs
-  ├─ AI extraction API
-  └─ Central error handling
-          │
-     ┌────┴────┐
-     ▼         ▼
- MongoDB   LangChain/Gemini or OpenAI
- Mongoose      │
-               ▼
-        Schema-aware JSON
-        validation + filtering
+                     User
+                       │
+                       ▼
+             Natural Language Input
+                       │
+                       ▼
+                  LangChain
+                       │
+                       ▼
+                     LLM
+                       │
+                       ▼
+              Structured JSON
+                       │
+                       ▼
+              Schema Validation
+                       │
+                       ▼
+            Dynamic Form Renderer
+                       │
+                       ▼
+             Conditional Questions
+                       │
+                       ▼
+                Form Validation
+                       │
+                       ▼
+                    MongoDB
 ```
 
-## Project Structure
+The key idea is to keep **form structure, validation rules, and business logic outside the frontend code**.
+
+The frontend acts as a dynamic renderer that interprets the schema and generates the appropriate form.
+
+---
+
+# 🎯 Objectives
+
+The primary objectives of Forma AI are:
+
+* Build an intelligent form-filling experience.
+* Convert natural-language descriptions into structured information.
+* Dynamically generate forms from JSON schemas.
+* Support conditional field visibility.
+* Reduce unnecessary questions.
+* Provide client-side and server-side validation.
+* Persist form schemas and responses.
+* Create a reusable architecture for different business domains.
+* Improve form completion speed and usability.
+* Reduce hard-coded form-specific frontend logic.
+
+---
+
+# ✨ Key Features
+
+## 🤖 AI-Powered Natural Language Extraction
+
+Users can describe their situation using normal human language instead of manually entering every field.
+
+Example:
 
 ```text
-FORMAIOP-main/
-├── backend/
-│   ├── config/db.js
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   │   ├── User.js
-│   │   ├── FormSchema.js
-│   │   ├── Submission.js
-│   │   ├── PasswordResetToken.js
-│   │   └── Application.js          # legacy Week 1/2 compatibility
-│   ├── routes/
-│   ├── services/
-│   ├── seed/insuranceClaimSeed.js
-│   ├── utils/validateAgainstSchema.js
-│   └── server.js
-└── frontend/
-    ├── src/components/
-    ├── src/hooks/
-    ├── src/layout/
-    ├── src/pages/
-    ├── src/services/
-    ├── src/store/
-    ├── src/utils/
-    ├── src/App.jsx
-    └── src/main.jsx
+I had an accident yesterday while driving my Honda.
+The front windshield was damaged.
 ```
 
-## Prerequisites
+The AI engine extracts relevant information:
 
-- Node.js 20+
-- npm
-- MongoDB locally or MongoDB Atlas
-- Gemini (recommended) or OpenAI API key for AI extraction
-
-## Environment Variables
-
-Create `backend/.env` from `backend/.env.example`:
-
-```env
-PORT=5000
-MONGODB_URI=mongodb://127.0.0.1:27017/forma_ai
-CORS_ORIGIN=http://localhost:5173
-JWT_SECRET=replace-with-a-long-random-secret
-LLM_PROVIDER=google
-LLM_API_KEY=your_gemini_api_key
-LLM_MODEL=gemini-3.6-flash
-NODE_ENV=development
+```json
+{
+  "incident_type": "accident",
+  "vehicle": "Honda",
+  "damage": "windshield"
+}
 ```
 
-Never put `LLM_API_KEY`, `JWT_SECRET`, or MongoDB credentials in the frontend or Git.
+The extracted information can then be automatically mapped to the corresponding fields in the dynamic form.
 
-## Install and Run
+---
 
-### Backend
+## 📋 Dynamic Form Generation
 
-```bash
-cd backend
-npm install
-npm run seed
-npm run dev
+Forma AI generates forms dynamically from JSON schemas.
+
+Instead of manually creating each form component, the frontend reads the schema and renders the required fields.
+
+Example schema:
+
+```json
+{
+  "name": "vehicleType",
+  "label": "Vehicle Type",
+  "type": "select",
+  "required": true,
+  "options": [
+    "Car",
+    "Bike",
+    "Truck"
+  ]
+}
 ```
 
-The API runs on `http://localhost:5000` by default.
+The dynamic renderer interprets this configuration and creates the corresponding UI.
 
-### Frontend
+Supported field types can include:
 
-In a second terminal:
+* Text
+* Number
+* Date
+* Select
+* Radio
+* Checkbox
+* Textarea
+* File input
+* Conditional fields
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+---
 
-The Vite application runs on `http://localhost:5173` and proxies `/api` to the backend.
+## 🔀 Conditional Branching
 
-## Database Seed
+Forma AI supports dynamic branching based on user responses.
 
-The seed preserves the original `insurance-claim` form and its 18 fields. The schema now also has presentation sections for the production multi-step UI. Running the seed replaces the existing insurance-claim schema with the maintained canonical version.
-
-```bash
-cd backend
-npm run seed
-```
-
-## Authentication
-
-Private API resources require a JWT in:
+Example:
 
 ```text
-Authorization: Bearer <token>
+Was a vehicle involved?
+            │
+       ┌────┴────┐
+      Yes        No
+       │          │
+       ▼          ▼
+Vehicle        Other
+Details        Details
+       │
+       ▼
+Was the vehicle damaged?
+       │
+      Yes
+       │
+       ▼
+Damage Information
 ```
 
-Endpoints:
+Questions that are not relevant to the user's situation remain hidden.
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/api/auth/register` | Create account |
-| POST | `/api/auth/login` | Sign in |
-| GET | `/api/auth/me` | Current user |
-| PUT | `/api/auth/me` | Update profile |
-| POST | `/api/auth/change-password` | Change password |
-| POST | `/api/auth/logout` | Logout acknowledgement |
-| POST | `/api/auth/forgot-password` | Create reset token |
-| POST | `/api/auth/reset-password` | Reset password |
+This creates a more focused and efficient form experience.
 
-For local development, reset tokens are printed by the backend. A production deployment should connect this flow to an email provider rather than exposing tokens through logs.
+---
 
-## Forms API
+## 🧠 Schema-Driven Architecture
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| GET | `/api/forms` | List accessible forms |
-| GET | `/api/forms/:formId` | Get schema |
-| POST | `/api/forms` | Create user-owned form |
-| PUT | `/api/forms/:formId` | Version and update form |
-| DELETE | `/api/forms/:formId` | Delete owned form |
+Form definitions are represented using structured JSON schemas.
 
-System forms such as the seeded insurance claim have `createdBy: null` and are available to authenticated users as shared templates. User-created forms are ownership-scoped.
+A schema can contain:
 
-## AI API
+* Form metadata
+* Field definitions
+* Field types
+* Labels
+* Required fields
+* Validation rules
+* Dropdown options
+* Conditional logic
+* Branching rules
+* Default values
 
-```http
-POST /api/ai/extract
-Content-Type: application/json
-Authorization: Bearer <token>
-```
+Example:
 
 ```json
 {
   "formId": "insurance-claim",
-  "text": "I hit a deer on I-95 yesterday in my Honda Civic. The windshield shattered and nobody was injured."
+  "title": "Insurance Claim",
+  "fields": [
+    {
+      "name": "incidentType",
+      "type": "select",
+      "label": "Incident Type",
+      "required": true,
+      "options": [
+        "Accident",
+        "Theft",
+        "Animal Collision"
+      ]
+    },
+    {
+      "name": "vehicle",
+      "type": "text",
+      "label": "Vehicle",
+      "required": true
+    }
+  ]
 }
 ```
 
-The backend loads the selected schema, tells the LLM only about allowed fields, requires exact machine option values, parses the response defensively, validates types/options, removes unknown fields, and returns only safe structured data to the browser.
+This architecture makes the platform reusable across multiple form types and business domains.
 
-AI failure never prevents manual completion.
+---
 
-## Submission API
+# 🤖 AI-Powered Natural Language Extraction
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/api/submissions` | Create draft |
-| GET | `/api/submissions` | List current user's submissions |
-| GET | `/api/submissions/:id` | Get own submission |
-| PUT | `/api/submissions/:id` | Update draft |
-| DELETE | `/api/submissions/:id` | Delete draft |
-| POST | `/api/submissions/:id/submit` | Validate and submit draft |
-
-Submission records contain `userId`, `formId`, `formVersion`, `values`, `aiAssistedFields`, `status`, `currentStep`, timestamps and `submittedAt`.
-
-## Frontend Routes
-
-### Public
-
-- `/`
-- `/signin`
-- `/signup`
-- `/forgot-password`
-- `/reset-password`
-
-### Authenticated
-
-- `/dashboard`
-- `/forms`
-- `/forms/new`
-- `/forms/:formId`
-- `/forms/:formId/fill`
-- `/forms/:formId/fill/:submissionId`
-- `/forms/:formId/edit`
-- `/forms/:formId/preview`
-- `/drafts`
-- `/submissions`
-- `/submissions/:id`
-- `/templates`
-- `/profile`
-- `/settings`
-
-## Core Demo Flow
+The AI extraction pipeline uses **LangChain** to process natural-language input and communicate with the configured LLM.
 
 ```text
-Landing page
-   ↓
-Sign up / Sign in
-   ↓
-Dashboard
-   ↓
-Insurance Claim
-   ↓
-Describe what happened
-   ↓
-LangChain + LLM extraction
-   ↓
-Server schema validation
-   ↓
-AI-populated fields
-   ↓
-Human review / edit
-   ↓
-Conditional multi-step form
-   ↓
-Debounced auto-save
-   ↓
-Drafts → Resume
-   ↓
-Final Review
-   ↓
-Submit
-   ↓
-Submission Detail / History
+User Input
+     │
+     ▼
+Natural Language
+     │
+     ▼
+  LangChain
+     │
+     ▼
+Prompt + Schema
+     │
+     ▼
+    LLM
+     │
+     ▼
+Structured JSON
+     │
+     ▼
+Schema Validation
+     │
+     ▼
+Form Population
 ```
 
-## Security Notes
+The AI is instructed to return structured information that matches the expected form schema.
 
-- Passwords are hashed with bcrypt.
-- JWT secrets and LLM credentials are environment variables.
-- Private form/submission APIs require authentication.
-- User-owned resources are authorization checked on the backend.
-- AI output is treated as untrusted input.
-- Unknown AI fields are discarded.
-- Server validation runs before final submission.
-- API errors avoid stack traces and sensitive implementation details.
-- Authentication endpoints are rate limited.
-- CORS is restricted to configured origins.
+For example:
 
-## Deployment
+```text
+User:
 
-### Frontend
+I hit a deer yesterday while driving my Honda.
+The windshield was damaged.
+```
 
-The frontend is suitable for Vercel or Netlify. Configure the deployment so `/api` reaches the production backend, or replace the Vite proxy with the production API base URL.
+The extraction process can produce:
 
-### Backend
+```json
+{
+  "incident_type": "animal_collision",
+  "vehicle": "Honda",
+  "damage": "windshield"
+}
+```
 
-The backend can be deployed to Render or Railway. Set all environment variables in the platform's secret/environment configuration.
+The application can then map these values to the appropriate form fields.
 
-### MongoDB
+---
 
-MongoDB Atlas is recommended for production. Use a restricted database user and network access policy rather than committing connection credentials.
+# 📋 Dynamic Form Engine
 
-## Validation and Testing
+The dynamic form engine uses the schema as the source of truth.
 
-Backend unit tests are under `backend/src/tests` and can be run with:
+```text
+                  JSON Schema
+                       │
+                       ▼
+              Dynamic Renderer
+                       │
+          ┌────────────┼────────────┐
+          ▼            ▼            ▼
+        Text         Select        Date
+          │            │            │
+          └────────────┼────────────┘
+                       ▼
+               React Hook Form
+                       │
+                       ▼
+                  Validation
+                       │
+                       ▼
+                   Submission
+```
+
+This approach allows new forms to be created or modified by changing the schema instead of rewriting the entire frontend.
+
+---
+
+# 🔀 Conditional Branching
+
+Conditional rules determine whether a field or section should be displayed.
+
+Example:
+
+```json
+{
+  "name": "damageDescription",
+  "type": "textarea",
+  "label": "Describe the Damage",
+  "showIf": {
+    "field": "vehicleDamaged",
+    "equals": true
+  }
+}
+```
+
+When:
+
+```text
+vehicleDamaged = true
+```
+
+the field is displayed.
+
+When:
+
+```text
+vehicleDamaged = false
+```
+
+the field is hidden.
+
+This allows complex workflows to be represented through configuration.
+
+---
+
+# ✅ Validation
+
+Forma AI performs validation at both the frontend and backend levels.
+
+## Client-Side Validation
+
+React Hook Form manages:
+
+* Required fields
+* Input validation
+* Field-level errors
+* Form state
+* Submission state
+* Conditional validation
+
+## Server-Side Validation
+
+The backend validates submitted information before storing it.
+
+```text
+             Form Submission
+                    │
+                    ▼
+            Client Validation
+                    │
+                    ▼
+               Backend API
+                    │
+                    ▼
+            Server Validation
+                    │
+                    ▼
+                MongoDB
+```
+
+This ensures that invalid data cannot be accepted simply by bypassing the frontend.
+
+---
+
+# 💾 Data Persistence
+
+MongoDB is used as the primary database for storing application data.
+
+The system can maintain form schemas and submitted responses.
+
+## Form Schema
+
+```text
+Form
+ ├── formId
+ ├── title
+ ├── fields
+ ├── validationRules
+ └── conditionalLogic
+```
+
+## Form Response
+
+```text
+Response
+ ├── formId
+ ├── submittedData
+ ├── extractedData
+ └── submittedAt
+```
+
+Persistent storage allows form definitions and user responses to remain available across sessions.
+
+---
+
+# 🔄 How It Works
+
+## Step 1 — Select a Form
+
+The user selects a form from the application.
+
+```text
+User
+  │
+  ▼
+Select Form
+  │
+  ▼
+Request Form Schema
+```
+
+---
+
+## Step 2 — Load the Schema
+
+The frontend requests the form schema from the backend.
+
+```text
+React
+  │
+  ▼
+Express API
+  │
+  ▼
+MongoDB
+  │
+  ▼
+JSON Schema
+```
+
+---
+
+## Step 3 — Generate the Form
+
+The frontend dynamically renders the fields defined in the schema.
+
+```text
+JSON Schema
+     │
+     ▼
+Dynamic Renderer
+     │
+     ▼
+React Hook Form
+```
+
+---
+
+## Step 4 — Enter Natural Language
+
+The user provides a natural-language description.
+
+Example:
+
+```text
+I hit a deer yesterday in my Honda
+and the windshield was damaged.
+```
+
+---
+
+## Step 5 — AI Extraction
+
+The input is processed through LangChain and the configured LLM.
+
+```text
+Natural Language
+       │
+       ▼
+   LangChain
+       │
+       ▼
+      LLM
+       │
+       ▼
+Structured JSON
+```
+
+---
+
+## Step 6 — Populate the Form
+
+The extracted information is mapped to the appropriate fields.
+
+```text
+AI Output
+    │
+    ├── Incident Type
+    │
+    ├── Vehicle
+    │
+    └── Damage
+          │
+          ▼
+    Dynamic Form
+```
+
+---
+
+## Step 7 — Apply Conditional Logic
+
+The form evaluates configured business rules.
+
+```text
+User Answers
+     │
+     ▼
+Conditional Rules
+     │
+     ▼
+Relevant Fields
+```
+
+---
+
+## Step 8 — Validate
+
+The form is validated on both the client and server.
+
+```text
+Form
+ │
+ ▼
+Validation
+ │
+ ▼
+Valid Data
+```
+
+---
+
+## Step 9 — Store the Response
+
+The validated response is sent to the backend and stored in MongoDB.
+
+```text
+React
+  │
+  ▼
+Express API
+  │
+  ▼
+Validation
+  │
+  ▼
+MongoDB
+```
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                         ┌──────────────────────┐
+                         │        USER          │
+                         │                      │
+                         │ Natural Language     │
+                         │ Dynamic Form         │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │   React Frontend     │
+                         │                      │
+                         │ React Hook Form      │
+                         │ Dynamic Renderer     │
+                         │ AI Input             │
+                         └──────────┬───────────┘
+                                    │
+                                  REST
+                                   API
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │  Node.js + Express   │
+                         │                      │
+                         │ Controllers          │
+                         │ Services             │
+                         │ Validation           │
+                         │ Business Logic       │
+                         └───────┬──────┬───────┘
+                                 │      │
+                    ┌────────────┘      └─────────────┐
+                    ▼                                  ▼
+          ┌───────────────────┐              ┌───────────────────┐
+          │     LangChain     │              │      MongoDB      │
+          │                   │              │                   │
+          │ Prompt Handling   │              │ Form Schemas      │
+          │ AI Extraction     │              │ Form Responses    │
+          │ Output Processing │              │ Business Rules    │
+          └─────────┬─────────┘              └───────────────────┘
+                    │
+                    ▼
+              ┌─────────────┐
+              │     LLM     │
+              │             │
+              │ JSON Output │
+              └─────────────┘
+```
+
+---
+
+# 🧰 Tech Stack
+
+| Layer              | Technology                     |
+| ------------------ | ------------------------------ |
+| 🎨 Frontend        | React                          |
+| ⚡ Build Tool       | Vite                           |
+| 📋 Form Management | React Hook Form                |
+| 🧠 AI Framework    | LangChain                      |
+| 🤖 AI Model        | LLM                            |
+| 🖥️ Backend        | Node.js                        |
+| 🌐 API             | Express.js                     |
+| 🗄️ Database       | MongoDB                        |
+| 🧩 ODM             | Mongoose                       |
+| 📄 Data Format     | JSON                           |
+| 🔀 Form Logic      | Schema-Based Conditional Rules |
+| ✅ Validation       | Client + Server Validation     |
+| 🏗️ Architecture   | REST API + Schema-Driven UI    |
+
+---
+
+# 📡 API Architecture
+
+Forma AI uses REST APIs to communicate between the frontend and backend.
+
+Example API structure:
+
+```text
+/api
+│
+├── /forms
+│   ├── GET /
+│   ├── GET /:id
+│   └── POST /
+│
+├── /ai
+│   └── POST /extract
+│
+├── /responses
+│   ├── GET /
+│   ├── GET /:id
+│   └── POST /
+│
+└── /health
+    └── GET /
+```
+
+## AI Extraction Request
+
+```http
+POST /api/ai/extract
+Content-Type: application/json
+```
+
+Request:
+
+```json
+{
+  "formId": "insurance-claim",
+  "text": "I hit a deer yesterday in my Honda and damaged the windshield."
+}
+```
+
+Response:
+
+```json
+{
+  "incident_type": "animal_collision",
+  "vehicle": "Honda",
+  "damage": "windshield"
+}
+```
+
+---
+
+# 📸 Project Screenshots
+
+> Add your actual screenshots to `docs/screenshots/`.
+
+## 🏠 Dashboard
+
+![Forma AI Dashboard](docs/screenshots/dashboard.png)
+
+---
+
+## 🔐 Login
+
+![Forma AI Login](docs/screenshots/login.png)
+
+---
+
+## 📋 Dynamic Form
+
+![Forma AI Dynamic Form](docs/screenshots/dynamic-form.png)
+
+---
+
+## 🤖 AI Natural Language Input
+
+![Forma AI AI Input](docs/screenshots/ai-input.png)
+
+---
+
+## 🔀 Conditional Form
+
+![Forma AI Conditional Form](docs/screenshots/conditional-form.png)
+
+---
+
+## ✅ Form Validation
+
+![Forma AI Validation](docs/screenshots/validation.png)
+
+---
+
+# 📂 Project Structure
+
+```text
+Forma-AI/
+│
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── db.js
+│   │   │
+│   │   ├── controllers/
+│   │   │   ├── formController.js
+│   │   │   ├── aiController.js
+│   │   │   └── responseController.js
+│   │   │
+│   │   ├── middleware/
+│   │   │   └── errorHandler.js
+│   │   │
+│   │   ├── models/
+│   │   │   ├── Form.js
+│   │   │   └── Response.js
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── formRoutes.js
+│   │   │   ├── aiRoutes.js
+│   │   │   └── responseRoutes.js
+│   │   │
+│   │   ├── services/
+│   │   │   ├── llmService.js
+│   │   │   ├── formService.js
+│   │   │   └── validationService.js
+│   │   │
+│   │   ├── app.js
+│   │   └── server.js
+│   │
+│   ├── .env
+│   ├── .env.example
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── DynamicForm.jsx
+│   │   │   ├── FormField.jsx
+│   │   │   ├── AIInput.jsx
+│   │   │   ├── ConditionalField.jsx
+│   │   │   └── ValidationMessage.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── FormPage.jsx
+│   │   │   └── Dashboard.jsx
+│   │   │
+│   │   ├── hooks/
+│   │   │   └── useDynamicForm.js
+│   │   │
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   │
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   ├── package.json
+│   └── vite.config.js
+│
+├── docs/
+│   └── screenshots/
+│       ├── dashboard.png
+│       ├── login.png
+│       ├── dynamic-form.png
+│       ├── ai-input.png
+│       ├── conditional-form.png
+│       └── validation.png
+│
+├── .gitignore
+└── README.md
+```
+
+---
+
+# 🚀 Installation
+
+## Prerequisites
+
+Make sure the following are installed:
+
+* Node.js 20+
+* npm
+* MongoDB
+* Git
+* LLM API access
+
+---
+
+## 1️⃣ Clone the Repository
+
+```bash
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd Forma-AI
+```
+
+---
+
+## 2️⃣ Backend Setup
+
+Navigate to the backend directory:
 
 ```bash
 cd backend
-npm test
+npm install
 ```
 
-Frontend production build:
+Create a `.env` file:
+
+```env
+PORT=5000
+MONGO_URI=mongodb://127.0.0.1:27017/forma_ai
+CLIENT_URL=http://localhost:5173
+OPENAI_API_KEY=your_api_key
+```
+
+Start the backend:
+
+```bash
+npm run dev
+```
+
+Backend:
+
+```text
+http://localhost:5000
+```
+
+---
+
+## 3️⃣ Frontend Setup
+
+Open another terminal:
 
 ```bash
 cd frontend
-npm run build
+npm install
 ```
 
-Manual acceptance checklist:
+Start the frontend:
 
-- Signup/signin/logout
-- Protected routes
-- Insurance claim loads from MongoDB
-- AI extraction populates matching fields
-- Unknown AI fields are rejected
-- AI failure leaves manual form usable
-- Conditional injury/other-vehicle fields appear correctly
-- Multi-step validation blocks invalid progression
-- Draft save and auto-save work
-- Draft resumes at saved step
-- Final review is editable
-- Submitted data appears in history
-- Submission detail shows AI-assisted fields
-- Form builder creates and edits schemas
-- Desktop/tablet/mobile layouts remain usable
+```bash
+npm run dev
+```
 
-## Product Positioning
-
-### Traditional form
+Frontend:
 
 ```text
-50+ questions → manual entry → static branching → long completion time
+http://localhost:5173
 ```
 
-### Forma AI
+---
+
+# 🧪 Testing
+
+## Test 1 — Dynamic Form Rendering
+
+Open the application and select a form.
+
+Expected flow:
 
 ```text
-Natural language
-      ↓
-AI extraction
-      ↓
-Schema validation
-      ↓
-Adaptive questions
-      ↓
-Human review
-      ↓
-Save / resume
-      ↓
-Submission
+MongoDB
+   │
+   ▼
+Form Schema
+   │
+   ▼
+Backend API
+   │
+   ▼
+React
+   │
+   ▼
+Dynamic Form
 ```
 
-**Forma AI — Describe • Extract • Validate • Review • Submit**
+The form fields should be generated according to the schema.
+
+---
+
+## Test 2 — AI Extraction
+
+Enter a natural-language description such as:
+
+```text
+I hit a deer yesterday in my Honda
+and the windshield was damaged.
+```
+
+Expected structured output:
+
+```json
+{
+  "incident_type": "animal_collision",
+  "vehicle": "Honda",
+  "damage": "windshield"
+}
+```
+
+The extracted values should be mapped to the corresponding form fields.
+
+---
+
+## Test 3 — Conditional Fields
+
+Change an answer that controls conditional logic.
+
+Expected behavior:
+
+```text
+Condition Met
+     │
+     ▼
+Field Appears
+```
+
+When the condition is not satisfied:
+
+```text
+Condition Not Met
+       │
+       ▼
+Field Hidden
+```
+
+---
+
+## Test 4 — Form Validation
+
+Submit the form without completing required fields.
+
+Expected behavior:
+
+```text
+Required Field Missing
+        │
+        ▼
+Validation Error
+        │
+        ▼
+Submission Blocked
+```
+
+---
+
+## Test 5 — Backend Validation
+
+Send invalid or incomplete data directly to the backend.
+
+Expected behavior:
+
+```text
+Invalid Request
+      │
+      ▼
+Schema Validation
+      │
+      ▼
+Validation Error
+```
+
+---
+
+## Test 6 — Data Persistence
+
+Submit a valid form.
+
+Expected flow:
+
+```text
+React Form
+     │
+     ▼
+Express API
+     │
+     ▼
+Validation
+     │
+     ▼
+MongoDB
+```
+
+The submitted response should be stored successfully.
+
+---
+
+# 🔐 Security
+
+Forma AI follows basic application security practices.
+
+Security measures include:
+
+* Environment variables for sensitive configuration
+* API request validation
+* Server-side validation
+* Schema validation
+* Centralized error handling
+* Controlled database access
+* No hard-coded API credentials
+* Secure handling of LLM configuration
+
+Never commit sensitive credentials to GitHub.
+
+Add the following to `.gitignore`:
+
+```text
+.env
+node_modules/
+dist/
+```
+
+---
+
+# 📈 Development Journey
+
+## Phase 1 — Foundation ✅
+
+### Backend
+
+* [x] Node.js backend setup
+* [x] Express.js API
+* [x] MongoDB integration
+* [x] Mongoose configuration
+* [x] Form schema design
+* [x] Database models
+
+### Frontend
+
+* [x] React application setup
+* [x] Vite configuration
+* [x] React Hook Form integration
+* [x] Dynamic form structure
+* [x] Basic form components
+
+---
+
+## Phase 2 — Dynamic Form Engine ✅
+
+* [x] JSON schema-driven rendering
+* [x] Multiple field types
+* [x] Required fields
+* [x] Form validation
+* [x] Conditional fields
+* [x] Conditional branching
+* [x] Business-rule support
+
+---
+
+## Phase 3 — AI Integration ✅
+
+* [x] LangChain integration
+* [x] LLM integration
+* [x] Prompt engineering
+* [x] Natural-language input
+* [x] Structured JSON extraction
+* [x] AI output processing
+* [x] AI-to-form field mapping
+
+---
+
+## Phase 4 — Persistence & Validation ✅
+
+* [x] MongoDB persistence
+* [x] Form response storage
+* [x] Backend validation
+* [x] Schema validation
+* [x] Error handling
+* [x] API integration
+
+---
+
+## Final Review ✅
+
+* [x] Dynamic form generation
+* [x] AI-powered extraction
+* [x] Natural-language input
+* [x] Conditional branching
+* [x] Client-side validation
+* [x] Server-side validation
+* [x] MongoDB persistence
+* [x] REST API architecture
+* [x] Modular architecture
+* [x] Responsive user experience
+
+---
+
+# 🏆 Project Highlights
+
+| Area                 | Implementation           |
+| -------------------- | ------------------------ |
+| 🤖 AI Extraction     | LangChain + LLM          |
+| 📋 Dynamic Forms     | JSON Schema              |
+| ⚛️ Frontend          | React                    |
+| 📝 Form Management   | React Hook Form          |
+| 🖥️ Backend          | Node.js                  |
+| 🌐 API               | Express.js               |
+| 🗄️ Database         | MongoDB                  |
+| 🧩 ODM               | Mongoose                 |
+| 🔀 Conditional Logic | Schema-Based Rules       |
+| ✅ Validation         | Client + Server          |
+| 🔄 Data Mapping      | AI JSON → Form Fields    |
+| 💾 Persistence       | MongoDB                  |
+| 🏗️ Architecture     | Schema-Driven + REST API |
+
+---
+
+# 🌟 Advantages
+
+## Traditional Form
+
+```text
+              User
+                │
+                ▼
+          50+ Questions
+                │
+                ▼
+         Manual Data Entry
+                │
+                ▼
+       Long Completion Time
+```
+
+## Forma AI
+
+```text
+              User
+                │
+                ▼
+        Natural Language
+                │
+                ▼
+          AI Extraction
+                │
+                ▼
+         Structured Data
+                │
+                ▼
+       Relevant Questions
+                │
+                ▼
+        Faster Completion
+```
+
+### Key Benefits
+
+* ⚡ Faster form completion
+* 🎯 Relevant questions only
+* 🤖 AI-assisted data entry
+* 📋 Reusable dynamic form engine
+* 🔀 Flexible conditional workflows
+* 🧠 Schema-driven architecture
+* ✅ Strong validation
+* 💾 Persistent data storage
+* 🔧 Easier form maintenance
+* 📈 Scalable for multiple business domains
+
+---
+
+# 🔮 Future Enhancements
+
+Possible future improvements include:
+
+* 🤖 Advanced AI reasoning
+* 🧠 AI-generated form schemas
+* 📄 PDF and document extraction
+* 📷 OCR-based data extraction
+* 🗣️ Voice-based form filling
+* 🌍 Multi-language support
+* 📊 Form analytics
+* 🧠 AI-assisted validation
+* 🔐 Role-based access control
+* 🏢 Multi-tenant enterprise support
+* 📱 Mobile application
+* ☁️ Cloud deployment
+* 🔌 Enterprise API integrations
+* 📈 Workflow analytics
+* 📝 AI-generated submission summaries
+* 🔄 Advanced workflow automation
+
+---
+
+# 👥 Team Members
+
+Forma AI is developed as a collaborative academic project.
+
+| # | Team Member       |
+| - | ----------------- |
+| 1 | **Anuvardhini T** |
+| 2 | **Tarun Singh**   |
+| 3 | **Shreya Kumari** |
+| 4 | **Devi Akshya**   |
+| 5 | **Aman Panda**    |
+
+---
+
+# 📜 License
+
+This project is developed for **educational, academic, and demonstration purposes**.
+
+---
+
+<p align="center">
+  <strong>🚀 Forma AI</strong>
+</p>
+
+<p align="center">
+  Describe • Extract • Validate • Generate
+</p>
+
+<p align="center">
+  <em>Transforming complex forms into intelligent, adaptive experiences.</em>
+</p>
