@@ -1,0 +1,1 @@
+import {Navigate,useLocation} from 'react-router-dom';import {useAuthStore} from '../store/authStore';import {Loader} from './UI';export default function ProtectedRoute({children}){const {user,loading}=useAuthStore();const loc=useLocation();if(loading)return <Loader label="Loading Forma AI..."/>;return user?children:<Navigate to="/signin" replace state={{from:loc.pathname}}/>}
