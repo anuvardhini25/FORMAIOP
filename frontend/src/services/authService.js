@@ -1,1 +1,0 @@
-import {api} from './api';export const register=d=>api.post('/auth/register',d).then(r=>r.data.data);export const login=d=>api.post('/auth/login',d).then(r=>r.data.data);export const forgotPassword=email=>api.post('/auth/forgot-password',{email}).then(r=>r.data);export const resetPassword=(token,password)=>api.post('/auth/reset-password',{token,password}).then(r=>r.data);

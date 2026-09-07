@@ -1,1 +1,0 @@
-export default function CheckboxField({field,register,aiField}){return <div className="form-field checkbox-field"><label className="checkbox-label"><input type="checkbox" {...register(field.name)}/><span>{field.label}</span>{aiField&&<span className="ai-badge">✦ AI Extracted</span>}</label></div>}
