@@ -65,7 +65,14 @@ const templates = [
     }
   }
 ];
-
+// function justforfun(){
+//   return(
+//     <div>
+//       print("This is the template Page:")
+      
+//     </div>
+//   )
+// }
 function withSections(template) {
   const fields = template.schema.fields.map((field, index) => ({ ...field, order: index }));
   return { ...template.schema, fields, sections: [{ title: 'Form', description: template.description, order: 1, fields }] };
