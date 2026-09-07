@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 🚀 Forma AI
 
 ## AI-Augmented Dynamic Form Engine
@@ -1352,4 +1352,4 @@ This project is developed for **educational, academic, and demonstration purpose
 </p>
 =======
 # FORMAIOP
->>>>>>> 75405e4f31fbf7a11d309a74f5ed57a735607846
+
