@@ -118,7 +118,7 @@ export default function FillFormPage() {
 
   if (review) return (
     <AppShell>
-      <div className="page-heading color-black"><div><span className="eyebrow">FINAL REVIEW</span><h1>Review your information</h1><p>AI assists entry, but you stay in control. Check every answer before submitting.</p></div></div>
+      <div className="page-heading"><div><span className="eyebrow">FINAL REVIEW</span><h1>Review your information</h1><p>AI assists entry, but you stay in control. Check every answer before submitting.</p></div></div>
       <Card className="review-card">
         {form.sections?.map((section) => <div className="review-section" key={section.title}><h3>{section.title}</h3>{section.fields.map((field) => {
           const value = review[field.name];
