@@ -85,7 +85,7 @@ const DynamicForm = forwardRef(function DynamicForm({
           {visible.length ? visible.map((field) => <FormField key={field.id || field.name} field={field} register={register} errors={errors} aiField={aiFields.includes(field.name)} />) : <p className="muted">No additional information is required in this step.</p>}
           {Object.keys(errors).length > 0 && <div className="error-summary" role="alert">Please fix the highlighted fields before continuing.</div>}
           <div className="form-actions">
-            {step > 0 && <button type="button" className="btn btn-secondary" onClick={() => setStep(step - 1)}>← Back</button>}
+            {step > 0 && <button type="button" className="btn btn-secondary color-black" onClick={() => setStep(step - 1)}>← Back</button>}
             <div className="action-right">
               <button type="button" className="btn btn-secondary" onClick={() => onSaveDraft?.(getValues(), { currentStep: step })} disabled={saving}>{saving ? 'Saving…' : 'Save Draft'}</button>
               {step < sections.length - 1
